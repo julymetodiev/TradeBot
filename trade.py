@@ -2,11 +2,12 @@ import pandas
 from apiwrapper import PoloniexWrapper
 import alert
 import quant
+import config
 
 
 def analyze_and_trade(period=300, window_size=55, std_dev=2, sell_threshold=360):
-    P = PoloniexWrapper()
-    chart_data = P.get_chart_data('BTC', period=period)
+    P = PoloniexWrapper(config.POLONIEX_API_KEY, config.POLONIEX_API_SECRET)
+    chart_data = P.get_chart_data('USDT_BTC', period=period)
     df = pandas.DataFrame(chart_data)
     rolling_mean, upper_band, lower_band = quant.bollinger_bands(df['close'], window_size, std_dev)
     
@@ -27,5 +28,7 @@ def analyze_and_trade(period=300, window_size=55, std_dev=2, sell_threshold=360)
         rate = float(order_book['bids'][5][0])
         print(p.sell('USDT_BTC', rate, btc_balance))
         alert.send_email_alert("Trade Alert", "Sold BTC")
-    
-    
+
+
+if __name__ == "__main__":
+    analyze_and_trade()

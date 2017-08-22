@@ -5,7 +5,7 @@ import math
 import requests
 import config
 from hmac import new as _new
-from urllib import urlencode as _urlencode
+from urllib.parse import urlencode as _urlencode
 from hashlib import sha512 as _sha512
 
 
@@ -68,6 +68,7 @@ class PoloniexWrapper:
         pair = "&currencyPair=" + pair
         depth = "&depth=" + str(depth)
         url = base + pair + depth
+        print(url)
         return self.get_with_retry(url)
         
         
@@ -101,7 +102,8 @@ class PoloniexWrapper:
             'command': 'sell',
             'currencyPair': pair,
             'rate': rate,
-            'amount': amount
+            'amount': amount,
+            'immediateOrCancel': 1
         }
         return self.private_command(args)
         

@@ -1,8 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import alert
+#import alert
+import config
 import quant
-import poloniex
+from apiwrapper import PoloniexWrapper
 
 
 def analyze_poloniex_chart_data(data, window_size=30, std_dev=2, sell_threshold=10):
@@ -11,16 +12,6 @@ def analyze_poloniex_chart_data(data, window_size=30, std_dev=2, sell_threshold=
     
     last_lower_band = lower_band[lower_band.size-1]
     last_close = df['close'][df['close'].size-1]
-    
-    profit = quant.calculate_profit(df['close'], upper_band, lower_band, window_size, sell_threshold)
-    return profit
-    #avg = quant.calculate_average_window(df['close'], upper_band, lower_band)
-    #print(avg)
-    
-    
-    '''if (last_close < last_lower_band):
-        alert.send_email_alert("Bollinger band alert! Price dropped below lower band!")
-        print("Sent email alert")
     
     bb = pd.DataFrame(
         {
@@ -31,7 +22,7 @@ def analyze_poloniex_chart_data(data, window_size=30, std_dev=2, sell_threshold=
         }
     )
     bb.plot()
-    plt.show()'''
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -48,16 +39,6 @@ if __name__ == '__main__':
                         best_profit = profit
                         best_settings = (period, ws, sd, st)
                     print(best_profit, best_settings)'''
-                
-    data = poloniex.get_poloniex_chart_data(period=300)
-    profit = analyze_poloniex_chart_data(data, window_size=110, std_dev=2, sell_threshold=24)
-    print(profit)
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    p = PoloniexWrapper(config.POLONIEX_API_KEY, config.POLONIEX_API_SECRET)
+    data = p.get_chart_data('USDT_BTC', period=300, days=60)
+    analyze_poloniex_chart_data(data, window_size=20, std_dev=2, sell_threshold=360)

@@ -13,7 +13,7 @@ class PoloniexWrapper:
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
         self.api_secret = api_secret
-    
+
     def get_with_retry(self, url):
         data = None
         while data is None:
@@ -22,7 +22,7 @@ class PoloniexWrapper:
             except requests.exceptions.ChunkedEncodingError as e:
                 continue
         return data.json()
-        
+
     def post_with_retry(self, payload):
         data = None
         while data is None:
@@ -31,7 +31,7 @@ class PoloniexWrapper:
             except requests.exceptions.ChunkedEncodingError as e:
                 continue
         return data.json()
-                
+     
     def private_command(self, args, timeout=30):
         date = None
         for _ in range(timeout):
@@ -59,10 +59,10 @@ class PoloniexWrapper:
             else:
                 break;
         return data
-        
+
     def get_ticker(self):
         return self.get_with_retry('https://poloniex.com/public?command=returnTicker')
-        
+  
     def get_order_book(self, pair, depth=30):
         base = "https://poloniex.com/public?command=returnOrderBook"
         pair = "&currencyPair=" + pair
@@ -70,8 +70,8 @@ class PoloniexWrapper:
         url = base + pair + depth
         print(url)
         return self.get_with_retry(url)
-        
-        
+
+
     def get_chart_data(self, pair, period=300, days=60):
         base = 'https://poloniex.com/public?command=returnChartData'
         start = '&start=' + str(time.time()-(days*24*60*60))
@@ -80,13 +80,13 @@ class PoloniexWrapper:
         period = '&period=' + str(period)
         url = base + pair + start + end + period
         return self.get_with_retry(url)
-         
+
     def get_balances(self):
         args = {
             'command': 'returnBalances'
         }
         return self.private_command(args)
-    
+
     def buy(self, pair, rate, amount):
         args = {
             'command': 'buy',
@@ -96,7 +96,7 @@ class PoloniexWrapper:
             'immediateOrCancel': 1
         }
         return self.private_command(args)
-    
+
     def sell(self, pair, rate, amount):
         args = {
             'command': 'sell',
@@ -106,11 +106,11 @@ class PoloniexWrapper:
             'immediateOrCancel': 1
         }
         return self.private_command(args)
-        
-    
+
+
 if __name__ == '__main__':
     p = PoloniexWrapper(config.POLONIEX_API_KEY, config.POLONIEX_API_SECRET)
-    
+
     '''usdt_balance = float(p.get_balances()['USDT'])
     order_book = p.get_order_book('USDT_BTC')
     rate = float(order_book['asks'][5][0])
@@ -120,8 +120,8 @@ if __name__ == '__main__':
     print(rate)
     print(amount)
     print(p.buy('USDT_BTC', rate, amount))'''
-    
-    
+
+
     '''btc_balance = float(p.get_balances()['BTC'])
     order_book = p.get_order_book('USDT_BTC')
     rate = float(order_book['bids'][5][0])
@@ -131,18 +131,4 @@ if __name__ == '__main__':
     print(rate)
     print(amount)
     print(p.sell('USDT_BTC', rate, btc_balance))'''
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+  

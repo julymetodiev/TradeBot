@@ -5,6 +5,26 @@ import quant
 import config
 
 
+def test_simple_bollinger_strategy(period, window_size, std_dev, sell_threshold):
+    P = PoloniexWrapper(config.POLONIEX_API_KEY, config.POLONIEX_API_SECRET)
+    chart_data = P.get_chart_data('USDT_BTC', period=period)
+    df = pandas.DataFrame(chart_data)
+    rolling_mean, upper_band, lower_band = quant.bollinger_bands(df['close'], window_size, std_dev)
+    print(len(upper_band))
+    print(len(lower_band))
+    print(len(df['close']))
+
+    for i in range(lower_band.size):
+        last_lower_band = lower_band[i]
+        last_upper_band = upper_band[i]
+        last_close = df['close'][i]
+
+        if (last_close < last_lower_band):
+            print("Bought BTC at " + str(i))
+        elif (last_close > last_upper_band):
+            print("Sold BTC at " + str(i))
+
+
 def analyze_and_trade(period=300, window_size=55, std_dev=2, sell_threshold=360):
     P = PoloniexWrapper(config.POLONIEX_API_KEY, config.POLONIEX_API_SECRET)
     chart_data = P.get_chart_data('USDT_BTC', period=period)
@@ -33,4 +53,3 @@ def analyze_and_trade(period=300, window_size=55, std_dev=2, sell_threshold=360)
 
 if __name__ == "__main__":
     analyze_and_trade()
-

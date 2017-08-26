@@ -59,7 +59,7 @@ def analyze_and_trade(period=300, window_size=55, std_dev=2, sell_threshold=360)
         result = P.sell('USDT_BTC', rate, btc_balance)
         if is_successful_transaction(result):
             body = "Sold " + str(btc_balance) + " BTC at " + "$" + str(rate)
-            alert.send_email_alert("Trade Alert", "Sold BTC")
+            alert.send_email_alert("Trade Alert", body)
     
     print("Ran trade script at " + alert.get_pacific_time())
 

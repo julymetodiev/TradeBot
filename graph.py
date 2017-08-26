@@ -40,5 +40,5 @@ if __name__ == '__main__':
                         best_settings = (period, ws, sd, st)
                     print(best_profit, best_settings)'''
     p = PoloniexWrapper(config.POLONIEX_API_KEY, config.POLONIEX_API_SECRET)
-    data = p.get_chart_data('USDT_BTC', period=300, days=60)
-    analyze_poloniex_chart_data(data, window_size=20, std_dev=2, sell_threshold=360)
+    data = p.get_chart_data('USDT_BTC', period=300, days=100)
+    analyze_poloniex_chart_data(data, window_size=55, std_dev=2, sell_threshold=360)

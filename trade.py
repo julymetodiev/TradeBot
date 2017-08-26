@@ -25,6 +25,13 @@ def test_simple_bollinger_strategy(period, window_size, std_dev, sell_threshold)
             print("Sold BTC at " + str(i))
 
 
+def is_successful_transaction(T):
+    if T and "resultingTrades" in T and float(T["resultingTrades"][0]["amount"]) > 0:
+        return True
+        
+    return False
+
+
 def analyze_and_trade(period=300, window_size=55, std_dev=2, sell_threshold=360):
     P = PoloniexWrapper(config.POLONIEX_API_KEY, config.POLONIEX_API_SECRET)
     chart_data = P.get_chart_data('USDT_BTC', period=period)
@@ -40,14 +47,19 @@ def analyze_and_trade(period=300, window_size=55, std_dev=2, sell_threshold=360)
         order_book = P.get_order_book('USDT_BTC')
         rate = float(order_book['asks'][5][0])
         amount = (usdt_balance / rate)
-        print(P.buy('USDT_BTC', rate, amount))
-        alert.send_email_alert("Trade Alert", "Bought BTC")
+        result = P.buy('USDT_BTC', rate, amount)
+        if is_successful_transaction(result):
+            body = "Bought " + str(amount) + " BTC at " + "$" + str(rate) + ".\n"
+            alert.send_email_alert("Trade Alert", body)
     elif (last_close > last_upper_band):
         btc_balance = float(P.get_balances()['BTC'])
         order_book = P.get_order_book('USDT_BTC')
         rate = float(order_book['bids'][5][0])
-        print(P.sell('USDT_BTC', rate, btc_balance))
-        alert.send_email_alert("Trade Alert", "Sold BTC")
+        print(btc_balance)
+        result = P.sell('USDT_BTC', rate, btc_balance)
+        if is_successful_transaction(result):
+            body = "Sold " + str(btc_balance) + " BTC at " + "$" + str(rate)
+            alert.send_email_alert("Trade Alert", "Sold BTC")
     
     print("Ran trade script at " + alert.get_pacific_time())
 

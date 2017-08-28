@@ -1,5 +1,6 @@
 import boto.ses
 import datetime
+import config
 
 def get_utc_time_with_offset(offset=0):
     date = datetime.datetime.utcnow()
@@ -24,15 +25,15 @@ def get_email_recipients_from_file(fname="email_list.txt"):
         for line in f:
             recipients.append(line)
     except IOError:
-        print("No email recipient file specified. Defaulting to mpluders@gmail.com")
-        recipients.append("mpluders@gmail.com")
+        print("Email recipient file not valid. Defaulting to backup email address.")
+        recipients.append(config.BACKUP_EMAIL_ADDRESS)
     return recipients
 
 
 def send_email_alert(header, body):
     conn = boto.ses.connect_to_region('us-west-2')
     conn.send_email(
-            'chjodion@gmail.com',
+            config.SENDER_EMAIL_ADDRESS,
             header,
             body + " (Executed at " + get_pacific_time() + " PST, " + get_utc_time() + " UTC)",
             get_email_recipients_from_file())

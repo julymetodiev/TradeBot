@@ -110,25 +110,4 @@ class PoloniexWrapper:
 
 if __name__ == '__main__':
     p = PoloniexWrapper(config.POLONIEX_API_KEY, config.POLONIEX_API_SECRET)
-
-    '''usdt_balance = float(p.get_balances()['USDT'])
-    order_book = p.get_order_book('USDT_BTC')
-    rate = float(order_book['asks'][5][0])
-    amount = (usdt_balance / rate)
-    
-    print(usdt_balance)
-    print(rate)
-    print(amount)
-    print(p.buy('USDT_BTC', rate, amount))'''
-
-
-    '''btc_balance = float(p.get_balances()['BTC'])
-    order_book = p.get_order_book('USDT_BTC')
-    rate = float(order_book['bids'][5][0])
-    amount = (btc_balance / rate)
-    
-    print(btc_balance)
-    print(rate)
-    print(amount)
-    print(p.sell('USDT_BTC', rate, btc_balance))'''
   
